@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>First Impression 🤠</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <!-- Font Awesome Ikonok -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- AOS Animációk -->
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+</head>
+<body x-data="PageManager()" class="bg-gray-100 text-gray-800 transition-colors duration-500">
+    <!-- Dark Mode Toggle -->
+    <button id="darkModeBtn" class="fixed top-6 right-6 bg-gray-200 px-3 py-2 rounded z-50">
+      🌙
+    </button>
+    
+    <div x-data="HeroData()">
+
+      <!-- Hero -->
+      <header class="bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-12">
+        <div class="max-w-4xl mx-auto text-center" data-aos="fade-down">
+          <h1 class="text-4xl font-bold">Máté Pejnovac <span x-show="! superSecretMode" x-text="age"></span></h1>
+          <p class="text-lg mt-2">Computer Scientist 🌴 IT Specialist</p>
+          <div class="flex justify-center gap-6 mt-4 text-2xl">
+            <a href="mailto:pejnovac.mate@gmail.com"><i class="fas fa-envelope hover:text-yellow-300"></i></a>
+            <a href="https://linkedin.com/in/máté-pejnovac-622684243/" target="_blank"><i class="fab fa-linkedin hover:text-blue-300"></i></a>
+            <a href="https://github.com/penmate" target="_blank"><i class="fab fa-github hover:text-gray-300"></i></a>
+            <a href="https://gitlab.com/pejnovac.mate" target="_blank"><i class="fab fa-gitlab hover:text-gray-300"></i></a>
+          </div>
+        </div>
+      </header>
+
+      <div class="flex gap-6 p-6" >
+
+        <!-- BAL OLDAL (60%) -->
+        <div class="flex flex-col space-y-6 transition-all duration-500" :class="rightSection ? 'w-[60%] mr-auto' : 'w-[60%] mx-auto'">
+          <!-- About -->
+          <section class="bg-white rounded-xl shadow p-6 shadow" data-aos="fade-up">
+            <h2 class="text-2xl font-bold mb-3">Welcome To My Page 👽</h2>
+            <p x-text="bio">
+            </p>
+          </section>
+
+          <!-- Experience -->
+          <section class="bg-white rounded-xl shadow p-6 shadow" data-aos="fade-up">
+            <h2 class="text-2xl font-bold mb-3">Experience 🧠</h2>
+            <div class="space-y-4">
+              <template x-for="exp in experiences">
+                <div>
+                  <h3 x-text="exp.name" class="font-semibold"></h3>
+                  <p class="text-sm text-gray-600 dark:text-gray-300"><span x-text="exp.startYear"></span> – <span x-text="exp.endYear"></span></p>
+                  <p x-text="exp.description"></p>
+                </div>
+              </template>
+            </div>
+          </section>
+
+          <!-- Projects -->
+          <section class="bg-white rounded-xl shadow p-6 shadow" data-aos="zoom-in">
+            <h2 class="text-2xl font-bold mb-3">Projects 🚀</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <template x-for="proj in projects">
+                <div class="p-4 border rounded-lg hover:shadow-lg transition">
+                  <h3 x-text="proj.name" class="font-semibold"></h3>
+                  <p x-show="proj.visible" x-text="proj.description"></p>
+                  <button type="button" @click="activeProjectId = activeProjectId === proj.id ? null : proj.id" x-text="activeProjectId != proj.id ? 'Show' : 'Hide'" class="text-blue-700 hover:text-white border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-blue-500 dark:text-blue-500 dark:hover:text-white dark:hover:bg-blue-500 dark:focus:ring-blue-800"></button>
+                  <a href="#" x-text="'View Project'" x-show="proj.visible" class="text-green-700 hover:text-white border border-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-green-500 dark:text-green-500 dark:hover:text-white dark:hover:bg-green-600 dark:focus:ring-green-800"></a>
+
+                </div>         
+              </template>
+            </div>
+          </section>
+
+          <!-- Challenges -->
+          <section class="relative bg-white rounded-xl p-6 shadow overflow-hidden" data-aos="fade-up">
+            
+            <!-- Game Over réteg -->
+            <div 
+              x-show="lives <= 0"
+              x-transition
+              class="absolute inset-0 bg-black bg-opacity-70 flex items-center justify-center rounded-xl z-10">
+              <h2 class="text-4xl font-extrabold text-white animate-pulse">Game Over!</h2>
+            </div>
+
+            <!-- Fejléc -->
+            <h2 class="flex items-center justify-between text-2xl font-bold mb-3">
+              <span>My Daily Dose Of Challenge For You 😎</span>
+              <span class="flex gap-1">
+                <template x-for="i in lives">
+                  <img src="https://i.postimg.cc/dtcJdgqp/hearth.png" alt="!" class="w-6 h-6" />
+                </template>
+              </span>
+            </h2>
+
+            <!-- Kihívások listája -->
+            <template x-for="challenge in challenges">
+              <div class="p-4 m-4 border rounded-lg hover:shadow-lg transition relative">
+                
+                <h2 x-text="challenge.name" class="font-semibold"></h2>
+                <p x-text="challenge.description"></p>
+                
+                <!-- CHALLENGE 1 -->
+                <template x-if="challenge.id == 1">
+                  <div class="flex flex-wrap gap-3 m-2 items-center">
+
+                    <!-- Input mező dinamikus borderrel -->
+                    <input 
+                      type="text" 
+                      x-ref="answerInput" 
+                      class="border rounded px-2 py-1 focus:outline-none transition bg-indigo-100 text-indigo-700"
+                      :class="{
+                        'border-green-500 ring-2 ring-green-300': challenge.completed === true,
+                        'border-red-500 ring-2 ring-red-300': challenge.completed === false && challenge.textInput !== age
+                      }"
+                    />
+
+                    <!-- Gomb a válasz ellenőrzéséhez -->
+                    <button 
+                      @click="
+                        challenge.textInput = $refs.answerInput.value;
+                        if (challenge.textInput == age) {
+                          challenge.completed = true;
+                        } else {
+                          challenge.completed = false;
+                          lives--;
+                        }
+                      " 
+                      class="px-4 py-1 bg-indigo-500 text-white rounded-lg hover:bg-indigo-600 transition"
+                    >
+                      Check Answer
+                    </button>
+
+                    <!-- Sikeres válasz -->
+                    <template x-if="challenge.completed === true">
+                      <span class="ml-2 text-lg font-bold text-green-600 animate-bounce">
+                        🎉 Correct! Level Up! 🚀
+                      </span>
+                    </template>
+
+                    <!-- Sikertelen válasz -->
+                    <template x-if="challenge.completed === false && challenge.textInput !== age">
+                      <span class="ml-2 text-lg font-bold text-red-600 animate-pulse">
+                        ❌ Wrong answer! Try again! 💡
+                      </span>
+                    </template>
+
+                  </div>
+                </template>
+
+                <!-- CHALLENGE 2 -->
+                <template x-if="challenge.id == 2">
+                  <div class="flex flex-wrap gap-3 m-2">
+                    <template x-for="(skill, idx) in skills" :key="idx">
+                      <button
+                        type="button"
+                        class="px-3 py-1 rounded-full border transition flex items-center gap-2 select-none
+                              bg-indigo-100 text-indigo-700 hover:scale-105"
+                        :class="{
+                          'bg-green-100 text-green-700 border-green-400 ring-2 ring-green-200': skill.state === 'correct',
+                          'bg-red-100 text-red-700 border-red-400 ring-2 ring-red-200': skill.state === 'wrong',
+                          'opacity-50 cursor-not-allowed hover:scale-100': skill.disabled === true
+                        }"
+                        :disabled="skill.disabled"
+                        @click="checkSkill(skill, challenge)"
+                      >
+                        <span x-text="skill.name"></span>
+
+                        <!-- kis visszajelző ikon -->
+                        <span x-show="skill.state === 'correct'" class="text-green-600">✅</span>
+                        <span x-show="skill.state === 'wrong'" class="text-red-600">❌</span>
+                      </button>
+                    </template>
+                  </div>
+                </template>
+
+              </div>          
+            </template>   
+
+          </section>
+        </div>
+      
+        <!-- JOBB OLDAL (magyarázat panel) -->
+        <section 
+          x-show="activeProjectId !== null"
+          x-transition.duration.200ms
+          class="sticky top-[25vh] w-[40%] h-[40vh] border border-black dark:border-white 
+          bg-gray-100 rounded-xl shadow flex flex-col self-start">
+
+          <!-- Fejléc sáv -->
+          <div class="flex p-4 border justify-between items-center bg-dark-500 px-4 py-2 rounded-t-xl shadow">
+            <h3 class="font-semibold text-light">Explanation</h3>
+            <button 
+              @click="activeProjectId = null"
+              class="text-gray-600 hover:text-red-500 font-bold text-lg">
+              ❌
+            </button>
+          </div>
+
+          <!-- Tartalom -->
+          <div class="p-6 overflow-y-auto">
+            <p>Itt jelenik meg a magyarázat szövege...</p>
+          </div>
+        </section>
+      </div>
+
+    </div>
+
+    <!-- Contact -->
+    <footer class="bg-gray-800 text-white text-center py-6 mt-6" data-aos="fade-up">
+      <p>© <span x-text="currentYear"></span> Máté Pejnovac – All rights reserved</p>
+    </footer>
+
+    <!-- Scroll to Top Button -->
+    <button id="scrollTopBtn" class="fixed bottom-6 right-6 bg-indigo-600 text-white p-3 rounded-full shadow-lg hidden">
+      ↑
+    </button>
+
+    <!-- Scripts -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+      AOS.init({ duration: 1000, once: true });
+
+      // Scroll To Top
+      const scrollTopBtn = document.getElementById("scrollTopBtn");
+      window.addEventListener("scroll", () => {
+        if (window.scrollY > 300) {
+          scrollTopBtn.classList.remove("hidden");
+        } else {
+          scrollTopBtn.classList.add("hidden");
+        }
+      });
+      scrollTopBtn.addEventListener("click", () => {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      });
+
+      function PageManager() {
+        return {
+          currentYear: new Date().getFullYear(),
+          rightSection: false,
+          lives: 3,
+          activeProjectId: null,
+          challenges: [
+            {
+              id: 1,
+              name: 'Can You Hack My Page? ',
+              description: 'You can find out my age by hacking my client side code. But the question is, can You exploit my superSecret stuff? 😏',
+              active: true,
+              completed: undefined,
+              textInput: ''
+            },
+            {
+              id: 2,
+              name: 'Guess Game',
+              description: 'Choose from the listed skills belowWhich tools do you think I used to create the page? Choose your guesses. 🧐',
+              active: true,
+              completed: undefined
+            }
+          ],
+          skills: [
+            {
+              id: '1',
+              name: 'Python',             
+              correct: false,
+              disabled: false,
+              state: null
+            },
+            {
+              id: '1',
+              name: 'JavaScript',             
+              correct: true,
+              disabled: false,
+              state: null
+            },
+            {
+              id: '1',
+              name: "SQL",             
+              correct: false,
+              disabled: false,
+              state: null
+            },
+            {
+              id: '1',
+              name: 'React',             
+              correct: false,
+              disabled: false,
+              state: null
+            }
+          ],
+
+          checkAgeInput() {
+              console.log('asd');
+          },
+
+          // checkSkill: hívjuk a gombból; skill objektumot kap
+          checkSkill(skill, challenge) {
+            // ha már egyszer választották, ne csináljon semmit
+            if (skill.disabled) return;
+
+            // értéket ellenőrzünk
+            if (skill.correct) {
+              skill.state = 'correct';
+              // jelölhetjük a challenge-t is késznek
+              challenge.completed = true;
+              // opcionálisan: kis jutalom logika, pl. pontok, anim
+            } else {
+              skill.state = 'wrong';
+              this.lives = (this.lives || 0) - 1;
+              challenge.completed = false;
+            }
+
+            // letiltjuk az adott skillt, hogy ne lehessen újra kattintani
+            skill.disabled = true;
+
+            // opcionális: 2 másodperc múlva eltűnik a jelzés (visszaáll state -> null)
+            setTimeout(() => {
+              // ha szeretnéd, kommenteld ki ezt a részletet és hagyd meg a feedback-et
+              skill.state = null;
+              // ha azt akarod, hogy újra kattintható legyen, állítsd skill.disabled = false; vissza
+              // skill.disabled = false;
+            }, 2000);
+          }
+
+        }
+      };
+
+      function HeroData() {
+        return {
+          name: 'Máté Pejnovac',
+          age: new Date().getFullYear() - 1999 - (new Date() < new Date(new Date().getFullYear(), 4, 23)), // hány éves vagyok?
+          superSecretMode: true,
+          location: "Hungary",
+          bio: "Motivated IT professional with experience in software development and infrastructure. Passionate about learning and building impactful projects.",
+          projects: [
+            {
+              id: "1",
+              name: "Numerology App 🌠",
+              active: true,
+              visible: false,
+              description: "Python standalone app that analyzes names and birthdates.",
+              link: "",
+              date: "2020.12.03. 13:39"
+            },
+            {
+              id: "2",
+              name: "Agro Website 🐐",
+              active: true,
+              visible: false,
+              description: "Dashboard with real-time data using Flask & React.",
+              link: "",
+              date: "2020.12.03. 13:39"
+            }
+          ],
+          experiences: [
+            {
+              id: "1",
+              name: "Software Engineer – ABC Corp",
+              active: true,
+              description: "Developed web apps with Python & JavaScript.",
+              link: "",
+              startYear: "2017",
+              endYear: "2020"
+            },
+            {
+              id: "2",
+              name: "IT Support Specialist – XYZ Ltd",
+              active: true,
+              description: "Provided technical support and managed infrastructure projects.",
+              link: "",
+              startYear: "2020",
+              endYear: "2022"
+            }
+          ]
+        }
+      };
+
+      // Dark Mode
+      const darkBtn = document.getElementById("darkModeBtn");
+      const body = document.body;
+
+      if (localStorage.getItem("theme") === "dark") {
+        body.classList.add("dark");
+        darkBtn.textContent = "☀️";
+      }
+
+      darkBtn.addEventListener("click", () => {
+        body.classList.toggle("dark");
+        
+        if (body.classList.contains("dark")) {
+          localStorage.setItem("theme", "dark");
+          darkBtn.textContent = "☀️";
+          darkBtn.classList.remove("bg-gray-800", "text-white");
+          darkBtn.classList.add("bg-white", "text-black");
+          
+        } else {
+          localStorage.setItem("theme", "light");
+          darkBtn.textContent = "🌙";
+          darkBtn.classList.remove("bg-white", "text-black");
+          darkBtn.classList.add("bg-gray-800", "text-white");
+        }
+      });
+    </script>
+
+    <!-- Extra Dark Mode Stílus -->
+    <style>
+      .dark { background-color: #111827; color: #f9fafb; }
+      .dark section { background-color: #1f2937; color: #f9fafb; }
+      .dark footer { background-color: #111827; }
+    </style>
+  </div>
+</body>
+</html>

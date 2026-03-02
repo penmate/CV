@@ -12,8 +12,8 @@
 </head>
 <body x-data="PageManager()" class="bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-100 transition-colors duration-500">
     
-    <button id="darkModeBtn" class="fixed top-6 right-6 bg-gray-200 dark:bg-gray-800 text-black dark:text-white px-3 py-2 rounded z-50 transition-colors duration-500">
-      🌙
+    <button id="darkModeBtn" class="fixed top-6 right-6 bg-gray-800 dark:bg-gray-200 text-white dark:text-black px-3 py-2 rounded z-50 transition-all duration-500 shadow-lg hover:scale-110">
+      🌕
     </button>
     
     <div x-data="HeroData()">
@@ -388,7 +388,7 @@
           darkBtn.textContent = "☀️";
         } else {
           localStorage.setItem("theme", "light");
-          darkBtn.textContent = "🌙";
+          darkBtn.textContent = "🌕";
         }
       });
     </script>

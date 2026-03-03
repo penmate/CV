@@ -62,7 +62,7 @@ const SITE_DATA = {
         {
             id: 1,
             name: 'Can You Hack My Page? ',
-            description: 'You can find out my age by hacking my client side code. But the question is, can You exploit my superSecret stuff? 😏',
+            description: 'Can You find out my superSecret age by hacking my client side code? 😏',
             active: true,
             completed: undefined,
             textInput: ''
@@ -70,7 +70,7 @@ const SITE_DATA = {
         {
             id: 2,
             name: 'Guess Game', 
-            description: 'Which tools do you think I used to create the page? Choose your guesses. 🧐',
+            description: 'Which tools do you think I used to create the page? 🧐',
             content: [
             { id: '1', name: 'Python', correct: false, disabled: false, state: null },
             { id: '2', name: 'JavaScript', correct: true, disabled: false, state: null },
@@ -84,8 +84,8 @@ const SITE_DATA = {
         },
         {
             id: 3,
-            name: 'Two Truths & Three Lies',
-            description: 'Can you catch the lie that no one has managed to spot so far?',
+            name: 'Truths And Lies',
+            description: 'Can you catch the truths that no one has managed to do so far?',
             content: [
                 { id: '1', name: 'human beings only use 10% of their brain capacity, leaving the rest completely dormant.', correct: false, disabled: false, state: null },
                 { id: '2', name: 'The "5-second rule" for dropped food was actually scientifically proven by the FDA, but only for dry snacks.', correct: false, disabled: false, state: null },

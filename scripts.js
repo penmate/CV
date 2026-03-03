@@ -54,6 +54,7 @@ function PageManager() {
         currentYear: new Date().getFullYear(),
         lives: 3,
         activeProjectId: null,
+        gameStarted: false,
         challenges: SITE_DATA.challenges,
 
         checkSkill(skill, challenge) {

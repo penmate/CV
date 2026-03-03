@@ -97,25 +97,54 @@
               <h2 class="text-4xl font-extrabold text-white animate-pulse">Game Over!</h2>
             </div>
 
-            <h2 class="flex items-center justify-between text-2xl font-bold mb-3 text-gray-900 dark:text-white transition-colors duration-500">
-              <span>My Daily Dose Of Challenge For You 😎</span>
-              <span class="flex gap-1">
-                <template x-for="i in lives">
-                  <img src="https://i.postimg.cc/dtcJdgqp/hearth.png" alt="!" class="w-6 h-6" />
-                </template>
+            <h2 class="flex items-center justify-between text-2xl font-bold mb-3 text-gray-900 dark:text-white transition-colors duration-500 min-h-[32px]">
+
+              <span
+              x-show="gameStarted"
+              x-transition:enter="transition ease-out duration-700"
+              x-transition:enter-start="opacity-0 -translate-x-4"
+              x-transition:enter-end="opacity-100 translate-x-0">
+
+              My Daily Dose Of Challenge For You 😎
               </span>
+
+              <div
+              x-show="gameStarted"
+              x-transition:enter="transition ease-out duration-700 delay-200"
+              x-transition:enter-start="opacity-0 translate-x-4 scale-75"
+              x-transition:enter-end="opacity-100 translate-x-0 scale-100"
+              class="flex items-center gap-1"
+              >
+              <template x-for="i in lives">
+              <img src="https://i.postimg.cc/dtcJdgqp/hearth.png" alt="!" class="w-6 h-6 drop-shadow-md" />
+              </template>
+              </div>
+
             </h2>
 
-            <template x-for="challenge in challenges">
-  
+            <div x-show="!gameStarted" class="p-8 m-4 text-center border border-indigo-100 dark:border-indigo-500/30 bg-indigo-50 dark:bg-indigo-900/20 rounded-xl hover:shadow-lg dark:hover:shadow-indigo-500/10 transition-all duration-500">
+              <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-4">Ready for a Challenge? 🎮</h2>
+              <p class="text-gray-700 dark:text-gray-300 mb-8 max-w-lg mx-auto">
+              Test your knowledge, find the hidden truths, and see if you can beat the game. Are you up for it?
+              </p>
+              <button
+              @click="gameStarted = true"
+              class="px-8 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-lg shadow-md hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 text-lg"
+              >
+              Let's Do It!
+              </button>
+              </div>
+
+              <div x-show="gameStarted" x-transition.opacity.duration.700ms>
+
+              <template x-for="challenge in challenges">
               <div class="p-4 m-4 border border-gray-200 dark:border-gray-700 rounded-lg hover:shadow-lg transition-all duration-500 relative">
-                
+
                 <h2 x-text="challenge.name" class="font-semibold text-gray-900 dark:text-white transition-all duration-500"></h2>
                 <p x-text="challenge.description" class="text-gray-700 dark:text-gray-300 transition-all duration-500 mb-2"></p>
                 
                 <template x-if="challenge.id == 1">
-                  <div class="flex flex-wrap gap-3 mt-2 items-center">
-
+                  <div class="flex flex-wrap gap-3 mt-4 items-center">
                     <input 
                       type="text" 
                       x-ref="answerInput" 
@@ -125,7 +154,6 @@
                         'border-red-500 ring-2 ring-red-300 dark:ring-red-800': challenge.completed === false && challenge.textInput !== age
                       }"
                     />
-
                     <button 
                       @click="
                         challenge.textInput = $refs.answerInput.value;
@@ -152,12 +180,11 @@
                         ❌ Wrong answer! Try again! 💡
                       </span>
                     </template>
-
                   </div>
                 </template>
 
                 <template x-if="challenge.id == 2">
-                  <div class="flex flex-wrap gap-3 mt-2">
+                  <div class="flex flex-wrap gap-3 mt-4">
                     <template x-for="(skill, idx) in challenge.content" :key="idx">
                       <button
                         type="button"
@@ -171,7 +198,6 @@
                         @click="checkSkill(skill, challenge)"
                       >
                         <span x-text="skill.name"></span>
-
                         <span x-show="skill.state === 'correct'" class="text-green-600 dark:text-green-400">✅</span>
                         <span x-show="skill.state === 'wrong'" class="text-red-600 dark:text-red-400">❌</span>
                       </button>
@@ -186,61 +212,60 @@
 
                 <template x-if="challenge.id == 3">
                   <div x-data="{ currentIndex: 0 }" class="mt-4 flex flex-col gap-4">
+                    <div class="relative min-h-[120px]">
+                      <template x-for="(skill, idx) in challenge.content" :key="idx">
+                        <div x-show="currentIndex === idx" x-transition.opacity.duration.300ms class="absolute inset-0">
+                          <button
+                            type="button"
+                            class="w-full h-full text-left px-5 py-4 rounded-xl border relative transition-all duration-300 bg-indigo-50 text-indigo-700 dark:bg-gray-700 dark:text-indigo-200 dark:border-gray-600 hover:shadow-md hover:-translate-y-0.5"
+                            :class="{
+                              '!bg-green-100 !text-green-700 border-green-400 ring-2 ring-green-200 dark:!bg-green-900 dark:!text-green-200 dark:ring-green-800': skill.state === 'correct',
+                              '!bg-red-100 !text-red-700 border-red-400 ring-2 ring-red-200 dark:!bg-red-900 dark:!text-red-200 dark:ring-red-800': skill.state === 'wrong',
+                              'opacity-50 cursor-not-allowed': skill.disabled === true
+                            }"
+                            :disabled="skill.disabled"
+                            @click="checkSkill(skill, challenge)"
+                          >
+                            <span x-text="skill.name" class="block pr-8 leading-relaxed text-sm md:text-base"></span>
+                            <span x-show="skill.state === 'correct'" class="absolute right-4 top-1/2 -translate-y-1/2 text-2xl">✅</span>
+                            <span x-show="skill.state === 'wrong'" class="absolute right-4 top-1/2 -translate-y-1/2 text-2xl">❌</span>
+                          </button>
+                        </div>
+                      </template>
+                    </div>
 
-                  <div class="relative min-h-[120px]">
-                    <template x-for="(skill, idx) in challenge.content" :key="idx">
-                      <div x-show="currentIndex === idx" x-transition.opacity.duration.300ms class="absolute inset-0">
-                        <button
-                          type="button"
-                          class="w-full h-full text-left px-5 py-4 rounded-xl border relative transition-all duration-300 bg-indigo-50 text-indigo-700 dark:bg-gray-700 dark:text-indigo-200 dark:border-gray-600 hover:shadow-md hover:-translate-y-0.5"
-                          :class="{
-                            '!bg-green-100 !text-green-700 border-green-400 ring-2 ring-green-200 dark:!bg-green-900 dark:!text-green-200 dark:ring-green-800': skill.state === 'correct',
-                            '!bg-red-100 !text-red-700 border-red-400 ring-2 ring-red-200 dark:!bg-red-900 dark:!text-red-200 dark:ring-red-800': skill.state === 'wrong',
-                            'opacity-50 cursor-not-allowed': skill.disabled === true
-                          }"
-                          :disabled="skill.disabled"
-                          @click="checkSkill(skill, challenge)"
-                        >
-                          <span x-text="skill.name" class="block pr-8 leading-relaxed text-sm md:text-base"></span>
-                          
-                          <span x-show="skill.state === 'correct'" class="absolute right-4 top-1/2 -translate-y-1/2 text-2xl">✅</span>
-                          <span x-show="skill.state === 'wrong'" class="absolute right-4 top-1/2 -translate-y-1/2 text-2xl">❌</span>
-                        </button>
-                      </div>
+                    <div class="flex justify-between items-center mt-2 px-2">
+                      <button 
+                        @click="currentIndex > 0 ? currentIndex-- : currentIndex = challenge.content.length - 1" 
+                        class="px-4 py-2 bg-gray-200 dark:bg-gray-700 rounded-lg text-sm font-semibold transition-colors disabled:opacity-30 hover:bg-gray-300 dark:hover:bg-gray-600"
+                      >
+                        ⬅️ Prev
+                      </button>
+                      
+                      <span class="text-sm font-medium text-gray-500 dark:text-gray-400">
+                        <span x-text="currentIndex + 1"></span> / <span x-text="challenge.content.length"></span>
+                      </span>
+
+                      <button 
+                        @click="currentIndex >= challenge.content.length - 1 ? currentIndex = 0 : currentIndex++" 
+                        class="px-4 py-2 bg-gray-200 dark:bg-gray-700 rounded-lg text-sm font-semibold transition-colors disabled:opacity-30 hover:bg-gray-300 dark:hover:bg-gray-600"
+                      >
+                        Next ➡️
+                      </button>
+                    </div>
+
+                    <template x-if="challenge.completed === true">
+                      <span class="text-lg font-bold text-green-600 dark:text-green-400 animate-bounce w-full block mt-2 text-center">
+                        🎉 Mission Passed! Respect+ 💪
+                      </span>
                     </template>
                   </div>
-
-                  <div class="flex justify-between items-center mt-2 px-2">
-                    <button 
-                      @click="currentIndex > 0 ? currentIndex-- : currentIndex = 5" 
-                      
-                      class="px-4 py-2 bg-gray-200 dark:bg-gray-700 rounded-lg text-sm font-semibold transition-colors disabled:opacity-30 disabled:cursor-not-allowed hover:bg-gray-300 dark:hover:bg-gray-600"
-                    >
-                      ⬅️ Prev
-                    </button>
-                    
-                    <span class="text-sm font-medium text-gray-500 dark:text-gray-400">
-                      <span x-text="currentIndex + 1"></span> / <span x-text="challenge.content.length"></span>
-                    </span>
-
-                    <button 
-                      @click="currentIndex >= 5 ? currentIndex = 0 : currentIndex++" 
-                      class="px-4 py-2 bg-gray-200 dark:bg-gray-700 rounded-lg text-sm font-semibold transition-colors disabled:opacity-30 disabled:cursor-not-allowed hover:bg-gray-300 dark:hover:bg-gray-600"
-                    >
-                      Next ➡️
-                    </button>
-                  </div>
-
-                  <template x-if="challenge.completed === true">
-                    <span class="text-lg font-bold text-green-600 dark:text-green-400 animate-bounce w-full block mt-2 text-center">
-                      🎉 Mission Passed! Respect+ 💪
-                    </span>
-                  </template>
-                  </div>
-                  </template>
+                </template>
 
               </div>          
-            </template>   
+              </template>
+
+              </div> 
 
           </section>
         

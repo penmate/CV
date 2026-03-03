@@ -69,7 +69,7 @@ const SITE_DATA = {
         },
         {
             id: 2,
-            name: 'Guess Game',
+            name: 'Guess Game', 
             description: 'Which tools do you think I used to create the page? Choose your guesses. 🧐',
             content: [
             { id: '1', name: 'Python', correct: false, disabled: false, state: null },

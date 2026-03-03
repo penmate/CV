@@ -158,7 +158,7 @@
 
                 <template x-if="challenge.id == 2">
                   <div class="flex flex-wrap gap-3 mt-2">
-                    <template x-for="(skill, idx) in skills" :key="idx">
+                    <template x-for="(skill, idx) in challenge.content" :key="idx">
                       <button
                         type="button"
                         class="px-3 py-1 rounded-full border flex items-center gap-2 select-none transition-all duration-300 bg-indigo-50 text-indigo-700 dark:bg-gray-700 dark:text-indigo-200 dark:border-gray-600 hover:scale-105"
@@ -178,18 +178,138 @@
                     </template>
                     <template x-if="challenge.completed === true">
                       <span class="ml-2 text-lg font-bold text-green-600 dark:text-green-400 animate-bounce w-full block mt-2">
-                        🎉 Correct! Level Up! 🚀
+                        🎉 Well Done, Almost There! 💯
                       </span>
                     </template>
                   </div>
                 </template>
 
+                <template x-if="challenge.id == 3">
+                  <div x-data="{ currentIndex: 0 }" class="mt-4 flex flex-col gap-4">
+
+                  <div class="relative min-h-[120px]">
+                    <template x-for="(skill, idx) in challenge.content" :key="idx">
+                      <div x-show="currentIndex === idx" x-transition.opacity.duration.300ms class="absolute inset-0">
+                        <button
+                          type="button"
+                          class="w-full h-full text-left px-5 py-4 rounded-xl border relative transition-all duration-300 bg-indigo-50 text-indigo-700 dark:bg-gray-700 dark:text-indigo-200 dark:border-gray-600 hover:shadow-md hover:-translate-y-0.5"
+                          :class="{
+                            '!bg-green-100 !text-green-700 border-green-400 ring-2 ring-green-200 dark:!bg-green-900 dark:!text-green-200 dark:ring-green-800': skill.state === 'correct',
+                            '!bg-red-100 !text-red-700 border-red-400 ring-2 ring-red-200 dark:!bg-red-900 dark:!text-red-200 dark:ring-red-800': skill.state === 'wrong',
+                            'opacity-50 cursor-not-allowed': skill.disabled === true
+                          }"
+                          :disabled="skill.disabled"
+                          @click="checkSkill(skill, challenge)"
+                        >
+                          <span x-text="skill.name" class="block pr-8 leading-relaxed text-sm md:text-base"></span>
+                          
+                          <span x-show="skill.state === 'correct'" class="absolute right-4 top-1/2 -translate-y-1/2 text-2xl">✅</span>
+                          <span x-show="skill.state === 'wrong'" class="absolute right-4 top-1/2 -translate-y-1/2 text-2xl">❌</span>
+                        </button>
+                      </div>
+                    </template>
+                  </div>
+
+                  <div class="flex justify-between items-center mt-2 px-2">
+                    <button 
+                      @click="currentIndex > 0 ? currentIndex-- : currentIndex = 5" 
+                      
+                      class="px-4 py-2 bg-gray-200 dark:bg-gray-700 rounded-lg text-sm font-semibold transition-colors disabled:opacity-30 disabled:cursor-not-allowed hover:bg-gray-300 dark:hover:bg-gray-600"
+                    >
+                      ⬅️ Prev
+                    </button>
+                    
+                    <span class="text-sm font-medium text-gray-500 dark:text-gray-400">
+                      <span x-text="currentIndex + 1"></span> / <span x-text="challenge.content.length"></span>
+                    </span>
+
+                    <button 
+                      @click="currentIndex >= 5 ? currentIndex = 0 : currentIndex++" 
+                      class="px-4 py-2 bg-gray-200 dark:bg-gray-700 rounded-lg text-sm font-semibold transition-colors disabled:opacity-30 disabled:cursor-not-allowed hover:bg-gray-300 dark:hover:bg-gray-600"
+                    >
+                      Next ➡️
+                    </button>
+                  </div>
+
+                  <template x-if="challenge.completed === true">
+                    <span class="text-lg font-bold text-green-600 dark:text-green-400 animate-bounce w-full block mt-2 text-center">
+                      🎉 Mission Passed! Respect+ 💪
+                    </span>
+                  </template>
+                  </div>
+                  </template>
+
               </div>          
             </template>   
 
           </section>
+        
+          <section class="bg-white dark:bg-gray-800 rounded-xl shadow p-6 mt-6 transition-colors duration-500" data-aos="fade-up" x-data="{ name: '', email: '', message: '', status: 'idle' }">
+            <h2 class="text-2xl font-bold mb-4 text-gray-900 dark:text-white transition-colors duration-500">Get In Touch ✉️</h2>
+            <p class="text-gray-700 dark:text-gray-300 mb-6 transition-colors duration-500">
+              Got a question or just want to say hi? Drop me a message using the form below!
+            </p>
+
+            <form
+            @submit.prevent="
+            status = 'sending';
+            setTimeout(() => { status = 'success'; name = ''; email = ''; message = ''; }, 1500)
+            "
+            class="flex flex-col gap-4"
+            >
+              <div class="flex flex-col md:flex-row gap-4">
+                <div class="flex-1">
+                <label for="name" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Name</label>
+                <input
+                type="text"
+                id="name"
+                x-model="name"
+                required
+                class="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white transition-all duration-300"
+                placeholder="Rick Sanchez"
+                >
+                </div>
+                <div class="flex-1">
+                <label for="email" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">E-mail</label>
+                <input
+                type="email"
+                id="email"
+                x-model="email"
+                required
+                class="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white transition-all duration-300"
+                placeholder="im_rick_c137@example.com"
+                >
+                </div>
+              </div>
+
+              <div>
+                <label for="message" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Message</label>
+                <textarea 
+                  id="message" 
+                  x-model="message"
+                  required 
+                  rows="4" 
+                  class="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white transition-all duration-300 resize-none"
+                  placeholder="Write down Your thought..."
+                ></textarea>
+              </div>
+
+              <button 
+                type="submit" 
+                :disabled="status === 'sending' || status === 'success'"
+                class="mt-2 self-start px-6 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-lg transition-all duration-300 disabled:opacity-70 disabled:cursor-not-allowed flex items-center gap-2"
+              >
+                <span x-show="status === 'idle'">Send Mail 🚀</span>
+                <span x-show="status === 'sending'">Sending in progress... ⏳</span>
+                <span x-show="status === 'success'">Sent successfully! ✅</span>
+              </button>
+            </form>
+          </section>
+
         </div>
       
+        
+
         <div class="transition-all duration-700 ease-in-out overflow-hidden shrink-0 sticky top-[25vh] self-start" :class="activeProjectId !== null ? 'w-[35%] ml-[5%] opacity-100' : 'w-0 ml-0 opacity-0'">
           <section class="w-full min-w-[350px] h-[40vh] border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 rounded-xl shadow flex flex-col overflow-hidden transition-colors duration-500">
             <div class="flex p-4 border-b dark:border-gray-700 justify-between items-center bg-gray-50 dark:bg-gray-900 px-4 py-3 transition-colors duration-500">
@@ -259,17 +379,32 @@
               id: 2,
               name: 'Guess Game',
               description: 'Which tools do you think I used to create the page? Choose your guesses. 🧐',
+              content: [
+                { id: '1', name: 'Python', correct: false, disabled: false, state: null },
+                { id: '2', name: 'JavaScript', correct: true, disabled: false, state: null },
+                { id: '3', name: "SQL", correct: false, disabled: false, state: null },
+                { id: '4', name: 'Ai Tools', correct: true, disabled: false, state: null },
+                { id: '5', name: 'Alpine.js', correct: true, disabled: false, state: null },
+                { id: '6', name: 'React', correct: false, disabled: false, state: null }            
+              ],
+              active: true,
+              completed: undefined
+            },
+            {
+              id: 3,
+              name: 'Two Truths & Three Lies',
+              description: 'Can you catch the lie that no one has managed to spot so far?',
+              content: [
+                  { id: '1', name: 'human beings only use 10% of their brain capacity, leaving the rest completely dormant.', correct: false, disabled: false, state: null },
+                  { id: '2', name: 'The "5-second rule" for dropped food was actually scientifically proven by the FDA, but only for dry snacks.', correct: false, disabled: false, state: null },
+                  { id: '3', name: "Stubbing your little toe generates enough kinetic energy to momentarily power a small LED bulb.", correct: false, disabled: false, state: null },
+                  { id: '4', name: 'Your fingers get wrinkly in the bath not because they absorb water, but because your nervous system actively changes their shape to give you a better grip on wet objects.', correct: true, disabled: false, state: null },
+                  { id: '5', name: 'Pressing the TV remote buttons harder when the batteries are dying generates micro-electricity to send the signal.', correct: false, disabled: false, state: null },
+                  { id: '6', name: 'The overwhelming urge to squeeze or playfully bite something ridiculously cute is a real brain mechanism called "Cute Aggression".', correct: true, disabled: false, state: null }            
+              ],
               active: true,
               completed: undefined
             }
-          ],
-          skills: [
-            { id: '1', name: 'Python', correct: false, disabled: false, state: null },
-            { id: '2', name: 'JavaScript', correct: true, disabled: false, state: null },
-            { id: '3', name: "SQL", correct: false, disabled: false, state: null },
-            { id: '4', name: 'ChatGPT', correct: true, disabled: false, state: null },
-            { id: '5', name: 'Alpine.js', correct: true, disabled: false, state: null },
-            { id: '6', name: 'React', correct: false, disabled: false, state: null }            
           ],
 
           checkSkill(skill, challenge) {
@@ -284,7 +419,7 @@
 
             skill.disabled = true;
 
-            const allCorrectFound = this.skills
+            const allCorrectFound = this.challenge.content
               .filter(s => s.correct)
               .every(s => s.state === 'correct');
 
